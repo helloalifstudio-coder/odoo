@@ -1,0 +1,21 @@
+# Never send Git history or local credentials to the build context.
+.git
+.git/**
+.env
+.env.*
+backups/
+
+# Local Python / JavaScript artifacts
+.venv/
+venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.egg-info/
+node_modules/
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
