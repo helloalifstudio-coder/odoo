@@ -15,40 +15,17 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     HOME=/var/lib/odoo \
-    PATH=/opt/odoo-venv/bin:${PATH
+    PATH=/opt/odoo-venv/bin:${PATH}
 
-# Odoo 20.0 uses Python 3.12+ and requires PostgreSQL 16+.
-# The system libraries below cover the native Python dependencies in requirements.txt.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \
-    curl \
-    fonts-dejavu-core \
-    fonts-liberation \
-    fonts-noto-cjk \
-    fonts-symbola \
-    build-essential \
-    node-less \
-    nodejs \
-    npm \
-    python3 \
-    python3-dev \
-    python3-pip \
-    python3-venv \
-    libffi-dev \
-    libjpeg-dev \
-    libldap2-dev \
-    libmagic1 \
-    libpq-dev \
-    libssl-dev \
-    libxml2-dev \
-    libxslt1-dev \
-    libsasl2-dev \
-    zlib1g-dev \
+    ca-certificates curl fonts-dejavu-core fonts-liberation fonts-noto-cjk \
+    fonts-symbola build-essential node-less nodejs npm python3 python3-dev \
+    python3-pip python3-venv libffi-dev libjpeg-dev libldap2-dev libmagic1 \
+    libpq-dev libssl-dev libxml2-dev libxslt1-dev libsasl2-dev zlib1g-dev \
     xz-utils \
     && rm -rf /var/lib/apt/lists/*
 
-# Install the patched wkhtmltopdf build used by Odoo for PDF reports.
-# Checksums and supported architectures follow Odoo's official 20.0 Docker build.
+# Install Odoo's patched wkhtmltopdf build with upstream checksums.
 RUN set -eux; \
     ARCH="${TARGETARCH:-$(dpkg --print-architecture)}"; \
     case "${ARCH}" in \
@@ -63,13 +40,11 @@ RUN set -eux; \
     apt-get install -y --no-install-recommends /tmp/wkhtmltox.deb; \
     rm -rf /var/lib/apt/lists/* /tmp/wkhtmltox.deb
 
-# RTL asset generation is required for languages with right-to-left scripts.
 RUN npm install --global rtlcss \
     && npm cache clean --force \
     && apt-get purge -y npm \
     && rm -rf /var/lib/apt/lists/*
 
-# Install the dependency versions declared by this exact source checkout.
 COPY requirements.txt /tmp/odoo-requirements.txt
 RUN python3 -m venv /opt/odoo-venv \
     && /opt/odoo-venv/bin/pip install --no-cache-dir --upgrade pip wheel \
