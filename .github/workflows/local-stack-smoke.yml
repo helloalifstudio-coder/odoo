@@ -26,6 +26,10 @@ on:
       - ".github/workflows/local-stack-smoke.yml"
   workflow_dispatch:
 
+concurrency:
+  group: odoo-local-stack-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
