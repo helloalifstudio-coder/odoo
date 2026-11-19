@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 umask 077
 
-ROOT="$(cd "$(dirname "$${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
 DATABASE="${1:-}"
